@@ -16,6 +16,15 @@ These files look great in a terminal but look awful on a phone or e-reader.
 The idea here is to create a program that an take a semi-arbitrary text file and
 convert it to markdown for easy convesion to other format.
 
+## Attribution
+* unwrap algorithm from Gregory C Benison,  
+    https://github.com/gbenison/Line-unwrap/
+
+## Resources
+* To identify nearly duplicate lines:
+  * https://python-ssdeep.readthedocs.io/
+  * could be useful for removing page header and footers on documents like rfcs
+
 ## Tasks
 - [x] "unwrap" text that has been wrapped at a fixed width
   - [x] Figure out how to do it when we know the width up front
