@@ -1,3 +1,3 @@
 #!/bin/bash
 set -e
-diff examples/simple.txt <(./unwrap.py examples/simple_folded_80.txt)
+diff examples/lorem/expected_unwrap.txt <(./unwrap.py examples/lorem/input.txt)
