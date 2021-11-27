@@ -37,7 +37,7 @@ def main(lines: Iterable[str]) -> None:
     print(text.strip())
 
 NEWLINES_RE = re.compile(r"\n{2,}")  # two or more "\n" characters
-def split_sections(input_text=""):
+def split_sections(input_text:str = "") -> Iterable[str]:
     'split the given input into sections specified by double newlines.'
 
     # From: https://stackoverflow.com/a/64863601
@@ -94,7 +94,7 @@ def identify_page_headings(blocks: Blocks) -> Blocks:
     return blocks
 
 ALPHA_RE = re.compile(r'[A-Za-z]')
-def is_mostly_letters(text, threshold=0.75):
+def is_mostly_letters(text:str, threshold:float=0.75) -> bool:
     'returns True if `text` is alphanumeric over a given threshold.'
 
     clean_text = text.strip()
