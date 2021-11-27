@@ -8987,5 +8987,3 @@ Acknowledgement
    Internet Society.
 
 Fielding, et al.            Standards Track                   [Page 176]
-
-

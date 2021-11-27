@@ -21,14 +21,15 @@ class Block:
 
 def main(lines: Iterable[str]) -> None:
     blocks = tokenize_blocks(lines)
+    blocks = identify_normal_text(blocks)
     blocks = identify_page_headings(blocks)
     blocks = remove_by_category(blocks, BlockCategory.PAGE_HEADING)
     text = join_blocks(blocks)
-    # text = unwrap(blocks)
-    print(text)
+    # text = unwrap(text)
+    print(text.strip())
+
 
 NEWLINES_RE = re.compile(r"\n{2,}")  # two or more "\n" characters
-
 def split_sections(input_text=""):
     # From: https://stackoverflow.com/a/64863601
     no_newlines = input_text.strip("\n")  # remove leading and trailing "\n"
@@ -69,9 +70,30 @@ def identify_page_headings(blocks: Iterable[Block]) -> Iterable[Block]:
 
     # Now flag the blocks with the heading category
     for block in blocks:
+        if block.category != BlockCategory.UNKNOWN:
+            continue
         if counts.get(block.content, 0) > 2:
             block.category = BlockCategory.PAGE_HEADING
     
+    return blocks
+
+ALPHA_RE = re.compile(r'[A-Za-z]')
+def is_mostly_letters(text, threshold=0.75):
+    clean_text = text.strip()
+    total_count = len(clean_text)
+    alpha_count = 0
+    for char in clean_text:
+        if ALPHA_RE.match(char):
+            alpha_count += 1
+    return alpha_count / total_count > threshold
+
+def identify_normal_text(blocks: Iterable[Block]) -> Iterable[Block]:
+    for block in blocks:
+        if block.category != BlockCategory.UNKNOWN:
+            return
+        is_normal_text = is_mostly_letters(block.content)
+        if is_normal_text: 
+            block.category = BlockCategory.NORMAL_TEXT
     return blocks
 
 if __name__ == '__main__':
