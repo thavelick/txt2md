@@ -6,7 +6,7 @@ import re
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Iterable
+from typing import Dict, Iterable, List
 
 
 class BlockCategory(Enum):
@@ -22,6 +22,8 @@ class Block:
 
     category: BlockCategory = BlockCategory.UNKNOWN
     content: str = ''
+
+Blocks = List[Block]
 
 def main(lines: Iterable[str]) -> None:
     'convert `lines` to markdown'
@@ -48,10 +50,10 @@ def split_sections(input_text=""):
 
     return sections
 
-def tokenize_blocks(lines: Iterable[str]) -> Iterable[Block]:
+def tokenize_blocks(lines: Iterable[str]) -> Blocks:
     'break down `lines` into blocks to be later parsed.'
 
-    blocks: Iterable[Block] = []
+    blocks: Blocks = []
     sections = split_sections(''.join(lines))
     for section in sections:
         block = Block(content=section)
@@ -59,7 +61,7 @@ def tokenize_blocks(lines: Iterable[str]) -> Iterable[Block]:
 
     return blocks
 
-def join_blocks(blocks: Iterable[Block]) -> str:
+def join_blocks(blocks: Blocks) -> str:
     'join blocks back together into one chunck of text.'
 
     return "\n".join([
@@ -67,17 +69,17 @@ def join_blocks(blocks: Iterable[Block]) -> str:
     ])
 
 def remove_by_category(
-            blocks: Iterable[Block],
+            blocks: Blocks,
             remove: BlockCategory
-        ) -> Iterable[Block]:
+        ) -> Blocks:
     'remove blocks of a given category from a list'
 
     return [ b for b in blocks if not b.category == remove ]
 
-def identify_page_headings(blocks: Iterable[Block]) -> Iterable[Block]:
+def identify_page_headings(blocks: Blocks) -> Blocks:
     'mark blocks that are frequently repeated as page headings.'
 
-    counts = {}
+    counts: Dict[str, int] = {}
     # Figure out how many of each block there are
     for block in blocks:
         counts[block.content] = counts.get(block.content, 0) + 1
@@ -103,7 +105,7 @@ def is_mostly_letters(text, threshold=0.75):
             alpha_count += 1
     return alpha_count / total_count > threshold
 
-def identify_normal_text(blocks: Iterable[Block]) -> Iterable[Block]:
+def identify_normal_text(blocks: Blocks) -> Blocks:
     'mark unknown blocks that look like prose as normal text.'
 
     for block in blocks:

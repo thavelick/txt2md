@@ -5,3 +5,4 @@ diff examples/lorem/expected_out.txt <(./txt2md.py examples/lorem/input.txt)
 diff examples/rfc/expected_out.txt <(./txt2md.py examples/rfc/input.txt)
 diff examples/page_headers/expected_out.txt <(./txt2md.py examples/page_headers/input.txt)
 which pylint > /dev/null && pylint -s n *.py
+which mypy > /dev/null && mypy txt2md.py
