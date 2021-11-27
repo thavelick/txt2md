@@ -21,8 +21,8 @@ class Block:
 
 def main(lines: Iterable[str]) -> None:
     blocks = tokenize_blocks(lines)
-    # blocks = identify_page_headings(blocks)
-    # blocks = remove_page_headings(blocks)
+    blocks = identify_page_headings(blocks)
+    blocks = remove_by_category(blocks, BlockCategory.PAGE_HEADING)
     text = join_blocks(blocks)
     # text = unwrap(blocks)
     print(text)
@@ -55,6 +55,24 @@ def join_blocks(blocks: Iterable[Block]) -> str:
         block.content for block in blocks
     ])
 
+def remove_by_category(
+            blocks: Iterable[Block], 
+            remove: BlockCategory
+        ) -> Iterable[Block]:
+    return [ b for b in blocks if not b.category == remove ]
+
+def identify_page_headings(blocks: Iterable[Block]) -> Iterable[Block]:
+    counts = {}
+    # Figure out how many of each block there are
+    for block in blocks:
+        counts[block.content] = counts.get(block.content, 0) + 1
+
+    # Now flag the blocks with the heading category
+    for block in blocks:
+        if counts.get(block.content, 0) > 2:
+            block.category = BlockCategory.PAGE_HEADING
+    
+    return blocks
+
 if __name__ == '__main__':
     main(fileinput.input())
-
